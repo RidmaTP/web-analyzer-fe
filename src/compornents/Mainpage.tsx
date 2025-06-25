@@ -7,10 +7,10 @@ function Mainpage() {
     const [loading, setLoading] = useState(false);
     const eventSourceObj = useRef<EventSource | null>(null);
     const [error, setError] = useState<string | null>(null);
-
+    const [errorCode, setErrorCode] = useState<number | null>(null);
 
     const handleStart = () => {
-        startFetchingData(link, setResponseData, setError, setLoading, eventSourceObj);
+        startFetchingData(link, setResponseData, setError, setErrorCode, setLoading, eventSourceObj);
     };
 
     return (
@@ -100,7 +100,7 @@ function Mainpage() {
                 }}
             >
                 {responseData ? (
-                    
+
                     <div
                         style={{
                             textAlign: 'start'
@@ -173,6 +173,8 @@ function Mainpage() {
                                 )) || <li style={{ color: 'gray' }}>None</li>}
                             </ul>
                         </div>
+
+                        <p><strong>Login :</strong> {String(responseData.IsLogin ? "Found" :"Not Found" )}</p>
                     </div>
                 ) : (
                     <>
@@ -180,6 +182,10 @@ function Mainpage() {
                             error ? (
                                 <div style={{ color: 'red', marginBottom: '1rem' }}>
                                     <strong>Error:</strong> {error}
+                                    <div style={{
+                                    marginBottom : "5"
+                                    }}></div>
+                                    <strong>Code:</strong> {errorCode}
                                 </div>
                             ) : (
                                 <p style={{ textAlign: 'center' }}>Welcome</p>
@@ -190,7 +196,7 @@ function Mainpage() {
                 )
                 }
             </div>
-             {/* response view end*/}
+            {/* response view end*/}
             <style>{`
         @keyframes spin {
           0% { transform: rotate(0deg);}
