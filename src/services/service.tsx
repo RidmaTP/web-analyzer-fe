@@ -1,11 +1,13 @@
+import { service } from "../const";
+
 export const startFetchingData = (
-    urlInput: string,
+    link: string,
     setEventData: (data: any) => void,
     setError: (err: string | null) => void,
     setLoading: (loading: boolean) => void,
     eventSourceObj: React.MutableRefObject<EventSource | null>
 ) => {
-    if (!urlInput) return alert('Please enter a URL');
+    if (!link) return alert('Please enter a URL');
 
     if (eventSourceObj.current) {
         eventSourceObj.current.close();
@@ -15,13 +17,13 @@ export const startFetchingData = (
     setError(null);
     setLoading(true);
 
-    const eventSource = new EventSource(`http://localhost:8000/api/result?url=${encodeURIComponent(urlInput)}`);
+    const eventSource = new EventSource(`${service}?url=${encodeURIComponent(link)}`);
     eventSourceObj.current = eventSource;
-
+    //response listener
     eventSource.onmessage = (event) => {
         try {
+            //parsing
             const parsed = JSON.parse(event.data);
-
             if (parsed.error) {
                 setError(parsed.error);
                 setLoading(false);
@@ -37,9 +39,9 @@ export const startFetchingData = (
             console.error('Invalid JSON:', event.data);
         }
     };
-
+    //error listener
     eventSource.onerror = () => {
-        console.error('SSE connection error');
+        console.error('connection error');
         if (eventSourceObj.current) {
             eventSourceObj.current.close();
             eventSourceObj.current = null;
