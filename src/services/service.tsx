@@ -4,6 +4,7 @@ export const startFetchingData = (
     link: string,
     setEventData: (data: any) => void,
     setError: (err: string | null) => void,
+    setErrorCode: (errCode: number | null) => void,
     setLoading: (loading: boolean) => void,
     eventSourceObj: React.MutableRefObject<EventSource | null>
 ) => {
@@ -24,8 +25,10 @@ export const startFetchingData = (
         try {
             //parsing
             const parsed = JSON.parse(event.data);
+
             if (parsed.error) {
                 setError(parsed.error);
+                setErrorCode(parsed.status_code);
                 setLoading(false);
                 if (eventSourceObj.current) {
                     eventSourceObj.current.close();
